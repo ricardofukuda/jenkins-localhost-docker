@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  jenkins_agent:
+    container_name: jenkins_agent
+    image: jenkins_agent:latest
+    build:
+      context: jenkins_agent
+      dockerfile: Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${HOME}/jenkins_agent_home:/home/jenkins/jenkins_home
+    networks:
+      - jenkins
+    restart: on-failure
+    environment:
+      JENKINS_AGENT_SSH_PUBKEY: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCUWoQ9av85nxvAa95+uxp203uQZwF6hq1YBXpWawkAQVxV9WCeupFdccSHb0HX+my1NrEnDcoMu6Gi3FWIOyK435giK2JsHVz0L7JK20LOIxlAW3QfUJb5LLz/Zy+q2L0JuYU6CHWzApyRlaMbv+7/b4kF7HcoLIZF4HItapkpkf3GHHgYONKDnLu9pA73eXcZCdKvWEKz2B24DgS9HUk6gN7zBOZm8lf2uMu57T4Z1j5HzGdImimwftmUViOwcnm4j7v+tNab5xElM5R7KkJ0MNhQ0ScRUECWo/IoNUYsuyWmONwCkkF21KPDu9SvqsoSTBNNLydgKkR16avwrK/wfFtQ46lVqUUQ4CF/anIy82qpvhI1whV1bPhHgoejGD0HUfuelCsFulWoFToVI2EtLt3grtfuDUPXIJ/+Ml8eGdTK1RqlSArbqtGq/WXtgAQPAtCwmcf8bpg4ScFAji5uozNNMr6DMcvOx3iaH1Pu9+COwZsWiDNVo7uqUnF3XFM= fukuda@fukuda
+
+  jenkins:
+    image: jenkins/jenkins:lts-jdk11
+    container_name: jenkins
+    volumes:
+      - ${HOME}/jenkins_home:/var/jenkins_home
+    ports:
+      - 8081:8080
+    restart: on-failure
+    networks:
+      - jenkins
+networks:
+  jenkins:
